@@ -13,4 +13,4 @@ WORKDIR /opt/cantaloupe-${CANTALOUPE_VERSION}
 RUN ln -s "cantaloupe-${CANTALOUPE_VERSION}.jar" "cantaloupe.jar"
 EXPOSE 8182
 
-CMD ["java", "-Dcantaloupe.config=/etc/cantaloupe.properties", "-Xmx2g", "-jar", "cantaloupe.jar"]
+CMD ["java", "-Dcantaloupe.config=/etc/cantaloupe.properties", "-Xmx4g", "-jar", "cantaloupe.jar"]

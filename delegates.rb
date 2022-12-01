@@ -238,7 +238,7 @@ class CustomDelegate
     case prefix
     when 'fcrepo'
       return {
-        'uri' => ENV['FCREPO_ENDPOINT'] + '/' + identifier,
+        'uri' => ENV['FCREPO_ENDPOINT'] + '/' + identifier.gsub(':', '/'),
         'headers' => {
           'Authorization' => "Bearer #{ENV['FCREPO_JWT_TOKEN']}"
         }

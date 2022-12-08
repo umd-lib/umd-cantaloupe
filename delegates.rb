@@ -9,6 +9,9 @@
 #
 # This version of the script works with Cantaloupe version >= 5.
 #
+
+require 'uri'
+
 class CustomDelegate
 
   ##
@@ -246,6 +249,14 @@ class CustomDelegate
     when 'fedora2'
       return {
         'uri' => ENV['FEDORA2_ENDPOINT'] + '/' + identifier + '/umd-bdef:image/getImage/',
+      }
+    when 'static'
+      return nil unless identifier == 'unavailable'
+
+      target_uri = URI(context['request_uri'])
+      target_uri.path = '/static/unavailable.png'
+      return {
+        'uri' => target_uri.to_s
       }
     else
       return nil

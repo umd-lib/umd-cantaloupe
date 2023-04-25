@@ -5,7 +5,7 @@
   <artifactId>umd-cantaloupe</artifactId>
   <name>UMD Cantaloupe IIIF</name>
   <description>UMD Cantaloupe IIIF</description>
-  <version>1.0.2</version>
+  <version>1.0.3</version>
 
   <properties>
     <twelvemonkeys.imageio.version>3.9.4</twelvemonkeys.imageio.version>

@@ -246,10 +246,6 @@ class CustomDelegate
           'Authorization' => "Bearer #{ENV['FCREPO_JWT_TOKEN']}"
         }
       }
-    when 'fedora2'
-      return {
-        'uri' => ENV['FEDORA2_ENDPOINT'] + '/' + identifier + '/umd-bdef:image/getImage/',
-      }
     when 'static'
       return nil unless identifier == 'unavailable'
 

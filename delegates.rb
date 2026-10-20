@@ -195,6 +195,8 @@ class CustomDelegate
   # @return [String] Source name.
   #
   def source(options = {})
+    prefix, = context['identifier'].split(':', 2)
+    prefix == 'static' ? 'FilesystemSource' : 'HttpSource'
   end
 
   ##
@@ -217,6 +219,22 @@ class CustomDelegate
   #                      given identifier, or nil if not found.
   #
   def filesystemsource_pathname(options = {})
+    prefix, identifier = context['identifier'].split(':', 2)
+    return nil unless prefix == 'static'
+
+    filename = case identifier
+               when 'favicon'
+                 'favicon.png'
+               when 'logo'
+                 'logo.png'
+               when 'unavailable'
+                 'image-unavailable.png'
+               else
+                 return nil
+               end
+
+    pathname = File.join('/var/images', filename)
+    File.file?(pathname) ? pathname : nil
   end
 
   ##
@@ -245,14 +263,6 @@ class CustomDelegate
         'headers' => {
           'Authorization' => "Bearer #{ENV['FCREPO_JWT_TOKEN']}"
         }
-      }
-    when 'static'
-      return nil unless identifier == 'unavailable'
-
-      target_uri = URI(context['request_uri'])
-      target_uri.path = '/static/unavailable.png'
-      return {
-        'uri' => target_uri.to_s
       }
     else
       return nil

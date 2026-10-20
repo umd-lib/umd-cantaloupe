@@ -17,6 +17,7 @@ ENV CANTALOUPE_URL https://github.com/cantaloupe-project/cantaloupe/releases/dow
 RUN curl -sL "${CANTALOUPE_URL}" | busybox unzip - -d /opt
 
 COPY cantaloupe.properties delegates.rb /etc
+COPY favicon.png logo.png image-unavailable.png /var/images/
 WORKDIR /opt/cantaloupe-${CANTALOUPE_VERSION}
 EXPOSE 8182
 

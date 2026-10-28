@@ -1,4 +1,4 @@
-FROM maven:3.8.6-eclipse-temurin-11 AS dependencies
+FROM maven:3-eclipse-temurin-11 AS dependencies
 
 RUN mkdir -p /var/jars
 COPY pom.xml /var/jars
@@ -9,8 +9,21 @@ RUN mvn dependency:copy-dependencies
 FROM eclipse-temurin:11
 
 # busybox unzip allows us to unzip from a piped source
-RUN apt-get update && apt-get install busybox
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends busybox \
+ && apt-get install -y --no-install-recommends --only-upgrade ca-certificates \
+ && rm -rf /var/lib/apt/lists/*
 
+# Address the eMudhra intermediate CA key compromise: remove both affected roots
+# from the JDK's own cacerts. Match on the certificate subject, because alias
+# naming differs between JDK builds.
+RUN keytool -list -v -cacerts -storepass changeit \
+    | awk '/^Alias name:/ { a = substr($0, 13) } /^Owner: CN=(emSign ECC Root CA - G3|AAA Certificate Services),/ { print a }' \
+    | while IFS= read -r alias; do \
+        echo "Removing from Java cacerts: $alias"; \
+        keytool -delete -cacerts -storepass changeit -alias "$alias"; \
+      done \
+ && ! keytool -list -v -cacerts -storepass changeit | grep -qE '^Owner: CN=(emSign ECC Root CA - G3|AAA Certificate Services),'
 ENV CANTALOUPE_VERSION 5.0.5
 ENV CANTALOUPE_URL https://github.com/cantaloupe-project/cantaloupe/releases/download/v${CANTALOUPE_VERSION}/cantaloupe-${CANTALOUPE_VERSION}.zip
 
